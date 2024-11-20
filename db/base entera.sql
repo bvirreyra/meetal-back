@@ -34,23 +34,27 @@ CREATE TABLE producto (
         ON DELETE CASCADE
 );
 GO
--- Tabla Usuarios
+-- Tabla clientes
 CREATE TABLE cliente (
     cliente_id INT PRIMARY KEY IDENTITY(1,1),
     nombre VARCHAR(100) NOT NULL,
     correo VARCHAR(255) NOT NULL UNIQUE,
-    contraseña VARCHAR(100) NOT NULL
+    contraseña VARCHAR(100) NOT NULL,
 );
 GO
 -- Tabla Carrito
 CREATE TABLE carrito (
     carrito_id INT PRIMARY KEY IDENTITY(1,1),
-    usuario_id INT NOT NULL,
+    cliente_id INT NOT NULL,
     fecha_creacion DATETIME NOT NULL DEFAULT GETDATE(),
-    CONSTRAINT FK_carrito_usuario FOREIGN KEY (usuario_id) REFERENCES usuario(usuario_id)
+	estado INT NOT NULL DEFAULT 0, ---(0 PENDIENTE, 1 COMPLETADO, 2 CANCELADO)
+    CONSTRAINT FK_carrito_usuario FOREIGN KEY (usuario_id) REFERENCES cliente(cliente_id)
         ON DELETE CASCADE
+	CONSTRAINT FK_historial_carrito_carrito FOREIGN KEY (estado) REFERENCES historial_carrito(historial_id)
+		ON DELETE CASCADE
 );
 GO
+
 -- Tabla DetalleCarrito
 CREATE TABLE detalle_carrito (
     detalle_carrito_id INT PRIMARY KEY IDENTITY(1,1),
@@ -58,12 +62,34 @@ CREATE TABLE detalle_carrito (
     producto_id INT NOT NULL,
     cantidad INT NOT NULL CHECK (cantidad > 0),
 	precio_unidad DECIMAL(6,2) NOT NULL,
-    CONSTRAINT FK_detalle_carrito_carrito FOREIGN KEY (carrito_id) REFERENCES dbo.carrito(carrito_id)
+    CONSTRAINT FK_detalle_carrito_carrito FOREIGN KEY (carrito_id) REFERENCES carrito(carrito_id)
         ON DELETE CASCADE,
     CONSTRAINT FK_detalle_carrito_producto FOREIGN KEY (producto_id) REFERENCES producto(producto_id)
         ON DELETE CASCADE
 );
 GO
+
+--- Tabla identificador
+CREATE TABLE identificador_carrito (
+	id INT PRIMARY KEY IDENTITY(1,1),
+	carrito_id INT NOT NULL,
+	estado_id INT NOT NULL,
+	nombre_estado VARCHAR(100)
+	CONSTRAINT FK_identificador_carrito_carrito FOREIGN KEY (carrito_id) REFERENCES carrito(carrito_id)
+        ON DELETE CASCADE,
+GO
+
+--- Tabla historial cliente
+CREATE TABLE historial_cliente (
+	id INT PRIMARY KEY IDENTITY(1,1),
+	cliente_id INT NOT NULL,
+    fecha DATETIME DEFAULT GETDATE(),
+    tipo_accion INT NOT NULL, -- compra, devolución, cancelación
+    descripcion VARCHAR(MAX), -- Descripción del evento
+    total_compra DECIMAL(10,2), -- Total del pedido (si aplica)
+    CONSTRAINT FK_Historial_Cliente FOREIGN KEY (cliente_id) REFERENCES clientes(cliente_id) ON DELETE CASCADE
+GO
+
 ------ INSERTS ------------------------
 INSERT INTO categoria (nombre, descripcion)
 VALUES 
@@ -266,6 +292,13 @@ GO
 INSERT INTO carrito (usuario_id)
 VALUES (1);
 GO
+
+INSERT INTO historial_carrito (estado_id, nombre_estado)
+VALUES 
+	(0,'VACIO'),
+	(1,'AGREGADO'),
+	(2,'PAGADO',
+	()
 -- Agregar un producto al carrito
 INSERT INTO detalle_carrito (carrito_id, producto_id, cantidad, precio_unidad)
 VALUES (1, 1,2,7.50); -- Aquí se agrega 2 unidades del producto con producto_id = 1
