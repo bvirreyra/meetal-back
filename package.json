@@ -1,0 +1,21 @@
+{
+  "name": "baseii",
+  "version": "1.0.0",
+  "type": "module",
+  "main": "index.js",
+  "scripts": {
+    "dev": "nodemon index.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "description": "",
+  "npm.enableScriptExplorer": true,
+  "dependencies": {
+    "cors": "^2.8.5",
+    "dotenv": "^16.4.5",
+    "express": "^4.21.1",
+    "mssql": "^11.0.1",
+    "nodemon": "^3.1.7"
+  }
+}
