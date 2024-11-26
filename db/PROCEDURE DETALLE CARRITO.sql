@@ -20,3 +20,22 @@ FROM cliente cl
 WHERE cl.cliente_id=1
 
 EXEC estado_carrito
+
+CREATE PROCEDURE inserta_carrito
+    @carrito_id INT,
+    @producto_id INT,
+    @cantidad INT,
+    @precio_unidad DECIMAL(10, 2)
+AS
+BEGIN
+    INSERT INTO detalle_carrito (carrito_id, producto_id, cantidad, precio_unidad)
+    VALUES (@carrito_id, @producto_id, @cantidad, @precio_unidad);
+END;
+
+EXEC inserta_carrito
+    @carrito_id = 1,
+    @producto_id = 3,
+    @cantidad = 3,
+    @precio_unidad = 12.00;
+
+select * from detalle_carrito
