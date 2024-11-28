@@ -3,7 +3,15 @@ import * as da from "../conection/conn.js";
 export const crudCliente = async (req, res) => {
   console.log("crudCliente:      ", req.query);
 
-  const { opcion, cliente_id, nombre, correo, pass } = req.query;
+  const {
+    opcion,
+    cliente_id,
+    nombre,
+    correo,
+    pass,
+    categoria_id,
+    subcategoria_id,
+  } = req.query;
 
   let message = "Operación realizada satisfactoriamente!";
   let query = "";
@@ -33,6 +41,26 @@ export const crudCliente = async (req, res) => {
     //         `;
     //   message = "Cliente eliminado satisfactoriamente!";
     // }
+    if (opcion == "C") {
+      query = `
+              EXEC listar_categorias;
+            `;
+      message = "Categorías listadas satisfactoriamente!";
+    }
+    if (opcion == "S") {
+      query = `
+              EXEC listar_subcategorias
+                @categoria_id = ${categoria_id};
+            `;
+      message = "Subcategorías listadas satisfactoriamente!";
+    }
+    if (opcion == "P") {
+      query = `
+              EXEC listar_productos
+	              @subcategoria_id=${subcategoria_id};
+            `;
+      message = "Productos listadas satisfactoriamente!";
+    }
     if (opcion == "R") {
       query = `
               SELECT cliente_id, nombre, correo FROM cliente;
