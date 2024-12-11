@@ -17,30 +17,6 @@ export const crudCliente = async (req, res) => {
   let query = "";
 
   try {
-    // if (opcion == "C") {
-    //   query = `
-    //           INSERT INTO cliente (nombre, correo, pass)
-    //           VALUES ('${nombre}', '${correo}', '${pass}');
-    //         `;
-    //   message = "Cliente creado satisfactoriamente!";
-    // }
-    // if (opcion == "U") {
-    //   query = `
-    //           UPDATE cliente
-    //           SET
-    //             nombre = '${nombre}',
-    //             correo = '${correo}'
-    //           WHERE cliente_id = ${cliente_id};
-    //         `;
-    //   message = "Cliente actualizado satisfactoriamente!";
-    // }
-    // if (opcion == "D") {
-    //   query = `
-    //           DELETE FROM cliente
-    //           WHERE cliente_id = ${id};
-    //         `;
-    //   message = "Cliente eliminado satisfactoriamente!";
-    // }
     if (opcion == "C") {
       query = `
               EXEC listar_categorias;
@@ -61,12 +37,14 @@ export const crudCliente = async (req, res) => {
             `;
       message = "Productos listadas satisfactoriamente!";
     }
-    if (opcion == "R") {
-      query = `
-              SELECT cliente_id, nombre, correo FROM cliente;
-            `;
-      message = "Clientes listados satisfactoriamente!";
-    }
+
+
+    // if (opcion == "R") {
+    //   query = `
+    //           SELECT cliente_id, nombre, correo FROM cliente;
+    //         `;
+    //   message = "Clientes listados satisfactoriamente!";
+    // }
     if (opcion == "H") {
       query = `
           EXEC carrito_cliente;

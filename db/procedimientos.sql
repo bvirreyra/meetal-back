@@ -43,8 +43,38 @@ END;
 EXEC listar_productos
 	@subcategoria_id=6
 
+
+--- PROCEDIMIENTO PARA BUSCAR CARRITO ----
+CREATE PROCEDURE busca_carrito
+	@cliente_id INT,
+	@existe INT OUTPUT
+AS
+BEGIN
+    IF EXISTS (
+        SELECT 1
+        FROM cliente c
+        WHERE c.cliente_id = @cliente_id
+    )
+    BEGIN
+        SET @existe = 1;
+    END
+    ELSE
+    BEGIN
+        SET @existe = 0;
+    END
+END;
+
+DECLARE @resultado INT;
+EXEC busca_carrito 
+    @cliente_id = 2,
+    @existe = @resultado OUTPUT; 
+PRINT 'Resultado:';
+PRINT @resultado;
+
+
 --- PROCEDIMIENTO PARA PAGAR EL CARRITO 
 CREATE PROCEDURE pagar_carrito
+    @resultado INT
 	@cliente_id INT,
 	@carrito_id INT,
     @producto_id INT,
@@ -52,6 +82,16 @@ CREATE PROCEDURE pagar_carrito
     @precio_unidad DECIMAL(10, 2)
 AS
 BEGIN
+IF @resultado = 1
+    BEGIN
+        PRINT 'El cliente tiene un carrito. Procediendo al pago.';
+        -- Aquí puedes agregar lógica para realizar el pago
+    END
+    ELSE
+    BEGIN
+        PRINT 'El cliente no tiene carrito. No se puede procesar el pago.';
+        -- Lógica para manejar este caso
+    END
 	BEGIN TRANSACTION;
 		BEGIN TRY
 		INSERT INTO detalle_carrito (carrito_id, producto_id, cantidad, precio_unidad)
@@ -67,6 +107,32 @@ BEGIN
 END;
 
 
+CREATE PROCEDURE pagar_carrito
+    @resultado INT
+	@cliente_id INT,
+	@carrito_id INT,
+    @producto_id INT,
+    @cantidad INT,
+    @precio_unidad DECIMAL(10, 2)
+AS
+BEGIN
+IF @resultado = 1
+    BEGIN
+        PRINT 'El cliente tiene un carrito. Procediendo al pago.';
+        -- Aquí puedes agregar lógica para realizar el pago
+    END
+    ELSE
+    BEGIN
+        PRINT 'El cliente no tiene carrito. No se puede procesar el pago.';
+        -- Lógica para manejar este caso
+    END
+END;
+
+DECLARE @resultado INT;
+EXEC busca_carrito 
+    @cliente_id = 2,
+    @existe = @resultado OUTPUT; 
+EXEC paga_carrito @resultado = @resultado;
 
 --- PROCEDIMIENTO PARA EL ESTADO DEL CARRITO DEL CLIENTE
 CREATE PROCEDURE estado_carrito
@@ -96,4 +162,7 @@ EXEC inserta_carrito
     @cantidad = 3,
     @precio_unidad = 12.00;
 
-select * from detalle_carrito							
+select * from detalle_carrito
+
+
+select * from producto
