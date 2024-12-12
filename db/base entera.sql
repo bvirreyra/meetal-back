@@ -773,9 +773,6 @@ VALUES
 (50, 'Brownies', 'Postre de chocolate compacto.', 10.00, 400);
 GO
 
-drop table producto
-
-
 -- Insertar usuario para el carrito
 INSERT INTO cliente (nombre, correo, pass)
 VALUES ('Juan López', 'juan.lopez@gmail.com', 'juan123');
@@ -784,21 +781,8 @@ GO
 INSERT INTO carrito (cliente_id)
 VALUES (1);
 GO
+
 -- Agregar un producto al carrito
 INSERT INTO detalle_carrito (carrito_id, producto_id, cantidad, precio_unidad)
-VALUES (1, 1,2,7.50); -- Aquí se agrega 2 unidades del producto con producto_id = 1
+VALUES (1, 1,2,7.50);
 GO
-
-use meetal
-select * from producto
-
-select * 
-from producto p
-join 
-subcategoria s on p.subcategoria_id=s.subcategoria_id
-where s.subcategoria_id=7
-
-select * from subcategoria
-where subcategoria.categoria_id=1
-
-select * from categoria
